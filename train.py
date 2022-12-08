@@ -4,11 +4,14 @@ import mindspore as ms
 import mindspore.nn as nn
 from mindspore.dataset import GeneratorDataset
 from mindspore.train.callback import ReduceLROnPlateau
+# from mindvision.engine.callback import LossMonitor
 
 from models import UNet
+from utils import Dataset
 
 dir_image = './data/image'
 dir_mask = './data/mask'
+dir_data = './data/train'
 dir_checkpoint = './checkpoints'
 
 
@@ -19,9 +22,9 @@ def train(net,
           val_percent,
           save_checkpoint=False):
     # 生成dateset
-    dataset = []
+    dataset = Dataset(dir_data)
     # 分离训练集与验证集
-    n_val = len(dataset) * val_percent
+    n_val = int(len(dataset) * val_percent)
     n_train = len(dataset) - n_val
     # 构建date loader
     dataset = GeneratorDataset(source=dataset,
@@ -47,6 +50,7 @@ def train(net,
     for epoch in range(epochs):
         print(f"Epoch {epoch + 1}\n-------------------------------")
         model.train(1, train_set, callbacks=[scheduler])
+        # model.train(1, train_set, callbacks=[LossMonitor(0.005)])
         model.eval(val_set)
         if save_checkpoint:
             ms.save_checkpoint(model, f"{dir_checkpoint}/'model_{epoch+1}.ckpt")
@@ -61,7 +65,7 @@ def get_args():
     parser.add_argument('--load', '-f', type=str, default=False, help='Load model from a .ckpt file')
     parser.add_argument('--validation', '-v', dest='val', type=float, default=0.2,
                         help='Percent of the data that is used as validation (0-1)')
-    parser.add_argument('--classes', '-c', type=int, default=2, help='Number of classes')
+    parser.add_argument('--classes', '-c', type=int, default=1, help='Number of classes')
     return parser.parse_args()
 
 

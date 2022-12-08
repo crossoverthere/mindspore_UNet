@@ -1,5 +1,7 @@
 import mindspore.nn as nn
 import mindspore.ops as ops
+import numpy as np
+from mindspore import Tensor
 
 
 class DoubleConv(nn.Cell):
@@ -85,3 +87,8 @@ class UNet(nn.Cell):
         x = self.up4(x, x1)
         logits = self.out(x)
         return logits
+
+
+if __name__ == "__main__":
+    _data = np.random.sample((512, 512))
+    _label = np.random.sample((512, 512))

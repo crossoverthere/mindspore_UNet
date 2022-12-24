@@ -19,6 +19,8 @@ class Dataset:
         image = image / 255
         mask = mask / 255
         # 调整图像通道数, 我为什么要在这里调整？
+        image = cv2.resize(image, (512, 512))
+        mask = cv2.resize(mask, (512, 512))
         image = np.reshape(image, [1, 512, 512])
         mask = np.reshape(mask, [1, 512, 512])
         return image, mask

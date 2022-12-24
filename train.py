@@ -8,6 +8,7 @@ from mindspore.train.callback import ReduceLROnPlateau
 
 from models import UNet
 from utils import Dataset
+from utils import train_loop, test_loop
 
 dir_image = './data/image'
 dir_mask = './data/mask'
@@ -52,6 +53,9 @@ def train(net,
         model.train(1, train_set, callbacks=[scheduler])
         # model.train(1, train_set, callbacks=[LossMonitor(0.005)])
         model.eval(val_set)
+
+        # train_loop(net, train_set, loss_fn, optimizer)
+        # test_loop(net, val_set, loss_fn)
         if save_checkpoint:
             ms.save_checkpoint(model, f"{dir_checkpoint}/'model_{epoch+1}.ckpt")
 
